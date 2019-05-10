@@ -12,12 +12,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -38,7 +40,7 @@ public class DepartmentControllerTest {
     department.setName("Technology");
     department.setUbication("2A");
 
-    List<Department> departments = Arrays.asList(department);
+    List<Department> departments = Collections.singletonList(department);
     given(departmentService.findAll()).willReturn(departments);
 
     this.mockMvc.perform(get("/departments"))
@@ -73,21 +75,50 @@ public class DepartmentControllerTest {
   }
 
   @Test
+  public void findByIdNotFound() throws Exception {
+    this.mockMvc.perform(get("/department/10"))
+            .andExpect(status().isNotFound());
+  }
+
+  @Test
   public void update() throws Exception {
     Department department = new Department();
-    department.setDepartmentId((long)1);
+    department.setDepartmentId(1L);
     department.setName("Technology");
     department.setUbication("2A");
 
     Department updatedDepartment = new Department();
+    updatedDepartment.setDepartmentId(1L);
     updatedDepartment.setName("Mechanic");
     updatedDepartment.setUbication("2B");
 
-
+    this.mockMvc.perform(put("/departments")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(asJsonString(updatedDepartment)))
+            .andExpect(status().isOk());
   }
 
   @Test
-  public void delete() {
+  public void updateNotFound() throws Exception {
+    this.mockMvc.perform(put("/department/10"))
+            .andExpect(status().isNotFound());
+  }
+
+  @Test
+  public void deleteDepartment() throws Exception {
+    Department department = new Department();
+    department.setDepartmentId(1L);
+    department.setName("Technology");
+    department.setUbication("2A");
+
+    this.mockMvc.perform(delete("/departments/1"))
+            .andExpect(status().isNoContent());
+  }
+
+  @Test
+  public void deleteNotFound() throws Exception {
+    this.mockMvc.perform(delete("/department/10"))
+            .andExpect(status().isNotFound());
   }
 
   public static String asJsonString(Object object) {

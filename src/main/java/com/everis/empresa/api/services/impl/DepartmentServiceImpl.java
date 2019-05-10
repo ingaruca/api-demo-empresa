@@ -28,27 +28,31 @@ public class DepartmentServiceImpl implements DepartmentService {
   @Override
   public Department findById(Long id) throws NotFoundException {
     return departmentRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException("0001", "Could not found department with id " + id));
+            .orElseThrow(() ->
+                    new NotFoundException("0001", "Could not found department with id " + id));
   }
 
   @Override
-  public void save(Department department) {
-    departmentRepository.save(department);
+  public Department save(Department department) {
+    return departmentRepository.save(department);
   }
 
   @Override
-  public void update(Department department, Long id) {
-    Department currentDepartment = departmentRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException("0001", "Could not found department with id " + id));
+  public Department update(Department department) {
+    Long departmentId = department.getDepartmentId();
+    Department currentDepartment = departmentRepository.findById(departmentId)
+            .orElseThrow(() -> new NotFoundException("0001",
+                    "Could not found department with id " + departmentId));
     currentDepartment.setName(department.getName());
     currentDepartment.setUbication(department.getUbication());
-    departmentRepository.save(currentDepartment);
+    return departmentRepository.save(currentDepartment);
   }
 
   @Override
   public void delete(Long id) {
     departmentRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException("0001", "Could not found department with id " + id));
+            .orElseThrow(() ->
+                    new NotFoundException("0001", "Could not found department with id " + id));
     departmentRepository.deleteById(id);
   }
 }

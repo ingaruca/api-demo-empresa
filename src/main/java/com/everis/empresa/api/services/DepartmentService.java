@@ -10,9 +10,9 @@ public interface DepartmentService {
 
   Department findById(Long id);
 
-  void save(Department department);
+  Department save(Department department);
 
-  void update(Department department, Long id);
+  Department update(Department department);
 
   void delete(Long id);
 

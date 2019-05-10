@@ -40,9 +40,9 @@ public class DepartmentController {
     return departmentService.findById(id);
   }
 
-  @PutMapping("/departments/{id}")
-  void update(@Valid @RequestBody Department department, @PathVariable Long id) {
-    departmentService.update(department, id);
+  @PutMapping("/departments")
+  void update(@Valid @RequestBody Department department) {
+    departmentService.update(department);
   }
 
   @DeleteMapping("/departments/{id}")

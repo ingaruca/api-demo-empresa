@@ -1,6 +1,7 @@
 package com.everis.empresa.api.services.impl;
 
 import com.everis.empresa.api.entities.Department;
+import com.everis.empresa.api.exceptions.NotFoundException;
 import com.everis.empresa.api.repositories.DepartmentRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -24,9 +25,11 @@ public class DepartmentServiceImplTest {
   @Mock
   private DepartmentRepository departmentRepository;
 
+  private Department department;
+
   @Test
   public void findAll() {
-    Department department = new Department();
+    department = new Department();
     department.setDepartmentId((long) 1);
     department.setName("Technology");
     department.setUbication("2A");
@@ -38,8 +41,8 @@ public class DepartmentServiceImplTest {
 
   @Test
   public void findById() {
-    Department department = new Department();
-    department.setDepartmentId((long) 1);
+    department = new Department();
+    department.setDepartmentId((long)1);
     department.setName("Technology");
     department.setUbication("2A");
 
@@ -49,34 +52,36 @@ public class DepartmentServiceImplTest {
 
   @Test
   public void save() {
-    Department department = new Department();
+    department = new Department();
     department.setName("Technology");
     department.setUbication("2A");
-
-    departmentRepository.save(department);
+    given(departmentRepository.save(department)).willReturn(department);
+    assertEquals(departmentService.save(department), department);
   }
 
   @Test
   public void update() {
-    Department department = new Department();
-    department.setDepartmentId((long) 1);
+    department = new Department();
     department.setName("Technology");
     department.setUbication("2A");
+    given(departmentRepository.findById(department.getDepartmentId())).willReturn(Optional.of(department));
+    given(departmentRepository.save(department)).willReturn(department);
+    assertEquals(departmentService.update(department), department);
+  }
 
-    Department updatedDepartment = new Department();
-    updatedDepartment.setName("Mechanic");
-    updatedDepartment.setUbication("2B");
-
-    departmentService.update(updatedDepartment, (long) 1);
+  @Test(expected = NotFoundException.class)
+  public void updateNotFound() {
+    departmentService.update(new Department());
   }
 
   @Test
   public void delete() {
-    Department department = new Department();
-    department.setDepartmentId((long) 1);
-    department.setName("Technology");
-    department.setUbication("2A");
+    given(departmentRepository.findById(1L)).willReturn(Optional.of(new Department()));
+    departmentService.delete(1L);
+  }
 
-    departmentService.delete((long) 1);
+  @Test(expected = NotFoundException.class)
+  public void deleteNotFound() {
+    departmentService.delete(1L);
   }
 }
