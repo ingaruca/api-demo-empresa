@@ -2,6 +2,7 @@ package com.everis.empresa.api.controllers;
 
 import com.everis.empresa.api.entities.Department;
 import com.everis.empresa.api.entities.Employee;
+import com.everis.empresa.api.services.EmployeeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,14 +32,14 @@ public class EmployeeControllerTest {
   MockMvc mockMvc;
 
   @MockBean
-  EmployeeController employeeController;
+  EmployeeService employeeController;
 
   private Employee employee;
 
   @Test
   public void getAll() throws Exception {
     List<Employee> employees = new ArrayList<>();
-    given(employeeController.getAll()).willReturn(employees);
+    given(employeeController.findAll()).willReturn(employees);
 
     this.mockMvc.perform(get("/employees"))
             .andExpect(status().isOk())
@@ -92,7 +93,7 @@ public class EmployeeControllerTest {
     employee.setDepartment(department);
     employee.setBoss("YES");
 
-    employeeController.create(employee);
+    employeeController.save(employee);
 
     this.mockMvc.perform(post("/employees")
             .contentType(MediaType.APPLICATION_JSON)

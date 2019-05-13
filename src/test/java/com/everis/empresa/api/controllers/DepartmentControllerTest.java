@@ -1,6 +1,7 @@
 package com.everis.empresa.api.controllers;
 
 import com.everis.empresa.api.entities.Department;
+import com.everis.empresa.api.services.DepartmentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,7 +31,7 @@ public class DepartmentControllerTest {
   private MockMvc mockMvc;
 
   @MockBean
-  private DepartmentController departmentController;
+  private DepartmentService departmentController;
 
   private Department department;
 
@@ -42,7 +43,7 @@ public class DepartmentControllerTest {
     department.setUbication("2A");
 
     List<Department> departments = Collections.singletonList(department);
-    given(departmentController.getAll()).willReturn(departments);
+    given(departmentController.findAll()).willReturn(departments);
 
     this.mockMvc.perform(get("/departments"))
             .andExpect(status().isOk())
@@ -55,7 +56,7 @@ public class DepartmentControllerTest {
     department.setName("Technology");
     department.setUbication("2A");
 
-    departmentController.create(department);
+    departmentController.save(department);
 
     this.mockMvc.perform(post("/departments")
     .contentType(MediaType.APPLICATION_JSON)
