@@ -1,7 +1,6 @@
 package com.everis.empresa.api.controllers;
 
 import com.everis.empresa.api.entities.Department;
-import com.everis.empresa.api.services.DepartmentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,17 +30,19 @@ public class DepartmentControllerTest {
   private MockMvc mockMvc;
 
   @MockBean
-  private DepartmentService departmentService;
+  private DepartmentController departmentController;
+
+  private Department department;
 
   @Test
   public void getAll() throws Exception {
-    Department department = new Department();
+    department = new Department();
     department.setDepartmentId((long)1);
     department.setName("Technology");
     department.setUbication("2A");
 
     List<Department> departments = Collections.singletonList(department);
-    given(departmentService.findAll()).willReturn(departments);
+    given(departmentController.getAll()).willReturn(departments);
 
     this.mockMvc.perform(get("/departments"))
             .andExpect(status().isOk())
@@ -50,9 +51,11 @@ public class DepartmentControllerTest {
 
   @Test
   public void create() throws Exception {
-    Department department = new Department();
+    department = new Department();
     department.setName("Technology");
     department.setUbication("2A");
+
+    departmentController.create(department);
 
     this.mockMvc.perform(post("/departments")
     .contentType(MediaType.APPLICATION_JSON)
@@ -62,12 +65,12 @@ public class DepartmentControllerTest {
 
   @Test
   public void findById() throws Exception {
-    Department department = new Department();
+    department = new Department();
     department.setDepartmentId((long)1);
     department.setName("Technology");
     department.setUbication("2A");
 
-    given(departmentService.findById((long)1)).willReturn(department);
+    given(departmentController.findById((long)1)).willReturn(department);
 
     this.mockMvc.perform(get("/departments/1"))
             .andExpect(status().isOk())
@@ -76,21 +79,19 @@ public class DepartmentControllerTest {
 
   @Test
   public void findByIdNotFound() throws Exception {
+    given(departmentController.findById(10L)).willReturn(new Department());
     this.mockMvc.perform(get("/department/10"))
             .andExpect(status().isNotFound());
   }
 
   @Test
   public void update() throws Exception {
-    Department department = new Department();
-    department.setDepartmentId(1L);
-    department.setName("Technology");
-    department.setUbication("2A");
-
     Department updatedDepartment = new Department();
     updatedDepartment.setDepartmentId(1L);
     updatedDepartment.setName("Mechanic");
     updatedDepartment.setUbication("2B");
+
+    departmentController.update(updatedDepartment);
 
     this.mockMvc.perform(put("/departments")
             .contentType(MediaType.APPLICATION_JSON)
@@ -100,16 +101,25 @@ public class DepartmentControllerTest {
 
   @Test
   public void updateNotFound() throws Exception {
+    Department updatedDepartment = new Department();
+    updatedDepartment.setDepartmentId(1L);
+    updatedDepartment.setName("Mechanic");
+    updatedDepartment.setUbication("2B");
+
+    departmentController.update(updatedDepartment);
+
     this.mockMvc.perform(put("/department/10"))
             .andExpect(status().isNotFound());
   }
 
   @Test
   public void deleteDepartment() throws Exception {
-    Department department = new Department();
+    department = new Department();
     department.setDepartmentId(1L);
     department.setName("Technology");
     department.setUbication("2A");
+
+    departmentController.delete(department.getDepartmentId());
 
     this.mockMvc.perform(delete("/departments/1"))
             .andExpect(status().isNoContent());
@@ -117,6 +127,8 @@ public class DepartmentControllerTest {
 
   @Test
   public void deleteNotFound() throws Exception {
+    departmentController.delete(10L);
+
     this.mockMvc.perform(delete("/department/10"))
             .andExpect(status().isNotFound());
   }

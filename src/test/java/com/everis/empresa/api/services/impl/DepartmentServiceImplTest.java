@@ -50,6 +50,11 @@ public class DepartmentServiceImplTest {
     assertEquals(departmentService.findById((long)1), department);
   }
 
+  @Test(expected = NotFoundException.class)
+  public void findByIdNotFound() {
+    departmentService.findById(1L);
+  }
+
   @Test
   public void save() {
     department = new Department();
