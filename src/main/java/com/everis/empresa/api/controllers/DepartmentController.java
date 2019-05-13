@@ -21,33 +21,37 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class DepartmentController {
 
+  private final DepartmentService departmentService;
+
   @Autowired
-  private DepartmentService departmentService;
+  public DepartmentController(final DepartmentService departmentService) {
+    this.departmentService = departmentService;
+  }
 
   @GetMapping("/departments")
-  List<Department> getAll() {
+  public List<Department> getAll() {
     return departmentService.findAll();
   }
 
   @PostMapping("/departments")
   @ResponseStatus(HttpStatus.CREATED)
-  void create(@Valid @RequestBody Department department) {
+  public void create(@Valid @RequestBody Department department) {
     departmentService.save(department);
   }
 
   @GetMapping("/departments/{id}")
-  Department findById(@PathVariable Long id) {
+  public Department findById(@PathVariable Long id) {
     return departmentService.findById(id);
   }
 
   @PutMapping("/departments")
-  void update(@Valid @RequestBody Department department) {
+  public void update(@Valid @RequestBody Department department) {
     departmentService.update(department);
   }
 
   @DeleteMapping("/departments/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  void delete(@PathVariable Long id) {
+  public void delete(@PathVariable Long id) {
     departmentService.delete(id);
   }
 

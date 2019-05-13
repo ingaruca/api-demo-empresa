@@ -16,7 +16,7 @@ public class Employee {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long employeId;
+  private Long employeeId;
 
   @Column(name = "name")
   private String name;
@@ -27,7 +27,7 @@ public class Employee {
   @Column(name = "telephone")
   private int telephone;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "department_id")
   private Department department;
 
@@ -35,11 +35,11 @@ public class Employee {
   private String boss;
 
   public Long getEmployeId() {
-    return employeId;
+    return employeeId;
   }
 
   public void setEmployeId(Long employeId) {
-    this.employeId = employeId;
+    this.employeeId = employeId;
   }
 
   public String getName() {

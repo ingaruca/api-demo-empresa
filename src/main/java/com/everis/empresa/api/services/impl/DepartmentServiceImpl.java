@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
 
-  private final DepartmentRepository departmentRepository;
+  private DepartmentRepository departmentRepository;
 
   @Autowired
   public DepartmentServiceImpl(DepartmentRepository departmentRepository) {

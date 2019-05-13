@@ -13,12 +13,13 @@ import java.util.List;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-  private final EmployeeRepository employeeRepository;
+  private EmployeeRepository employeeRepository;
 
-  private final DepartmentRepository departmentRepository;
+  private DepartmentRepository departmentRepository;
 
   @Autowired
-  public EmployeeServiceImpl(EmployeeRepository employeeRepository, DepartmentRepository departmentRepository) {
+  public EmployeeServiceImpl(EmployeeRepository employeeRepository,
+                             DepartmentRepository departmentRepository) {
     this.employeeRepository = employeeRepository;
     this.departmentRepository = departmentRepository;
   }
