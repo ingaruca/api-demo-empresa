@@ -5,21 +5,23 @@ import com.everis.empresa.api.exceptions.NotFoundException;
 import com.everis.empresa.api.repositories.DepartmentRepository;
 import com.everis.empresa.api.repositories.EmployeeRepository;
 import com.everis.empresa.api.services.EmployeeService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-  private EmployeeRepository employeeRepository;
+  private final EmployeeRepository employeeRepository;
 
-  private DepartmentRepository departmentRepository;
+  private final DepartmentRepository departmentRepository;
 
   @Autowired
-  public EmployeeServiceImpl(EmployeeRepository employeeRepository,
-                             DepartmentRepository departmentRepository) {
+  public EmployeeServiceImpl(final EmployeeRepository employeeRepository,
+                             final DepartmentRepository departmentRepository) {
     this.employeeRepository = employeeRepository;
     this.departmentRepository = departmentRepository;
   }
@@ -60,6 +62,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     currentEmployee.setTelephone(employee.getTelephone());
     currentEmployee.setDepartment(employee.getDepartment());
     currentEmployee.setBoss(employee.getBoss());
+    //dozer,mapstruct
     return employeeRepository.save(currentEmployee);
   }
 
@@ -69,4 +72,27 @@ public class EmployeeServiceImpl implements EmployeeService {
             .orElseThrow(() -> new NotFoundException("0001", "Could not found employee with id " + id));
     employeeRepository.deleteById(id);
   }
+
+  /*@Override
+  public List<Employee> findBySalary(double salary) {
+    List<Employee> employees = findAll();
+    List<Employee> employeesFilter = new ArrayList<>();
+
+    for (Employee employee:employees) {
+      if (employee.getSalary() < salary) {
+        employeesFilter.add(employee);
+      }
+    }
+
+    return employeesFilter;
+  }*/
+
+  @Override
+  public List<Employee> findBySalary(double salary) {
+    List<Employee> employees = findAll();
+    return employees.stream()
+            .filter(employee -> employee.getSalary() < salary)
+            .collect(Collectors.toList());
+  }
+
 }

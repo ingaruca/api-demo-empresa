@@ -118,4 +118,9 @@ public class EmployeeServiceImplTest {
   public void deleteNotFound() {
     employeeService.delete(1L);
   }
+
+  @Test
+  public void findBySalary() {
+    employeeService.findBySalary(2000.00);
+  }
 }

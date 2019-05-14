@@ -145,6 +145,16 @@ public class EmployeeControllerTest {
             .andExpect(status().isNotFound());
   }*/
 
+  @Test
+  public void findBySalary() throws Exception {
+    List<Employee> employees = new ArrayList<>();
+    given(employeeController.findBySalary(2000)).willReturn(employees);
+
+    this.mockMvc.perform(get("/employees/salary/2000"))
+            .andExpect(status().isOk())
+            .andExpect(content().json("[]"));
+  }
+
   public static String asJsonString(Object object) {
     try {
       return new ObjectMapper().writeValueAsString(object);

@@ -53,4 +53,9 @@ public class EmployeeController {
     employeeService.delete(id);
   }
 
+  @GetMapping("/employees/salary/{salary}")
+  public List<Employee> findBySalary(@PathVariable double salary) {
+    return employeeService.findBySalary(salary);
+  }
+
 }
