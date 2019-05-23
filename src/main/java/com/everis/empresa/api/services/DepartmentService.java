@@ -1,18 +1,20 @@
 package com.everis.empresa.api.services;
 
 import com.everis.empresa.api.entities.Department;
-
-import java.util.List;
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 public interface DepartmentService {
 
-  List<Department> findAll();
+  Flowable<Department> findAll();
 
-  Department findById(Long id);
+  Maybe<Department> findById(Long id);
 
-  Department save(Department department);
+  Single<Department> save(Department department);
 
-  Department update(Department department);
+  Single<Department> update(Department department);
 
   void delete(Long id);
 

@@ -6,7 +6,12 @@ import com.everis.empresa.api.repositories.DepartmentRepository;
 import com.everis.empresa.api.services.DepartmentService;
 
 import java.util.List;
+import java.util.Optional;
 
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,38 +26,32 @@ public class DepartmentServiceImpl implements DepartmentService {
   }
 
   @Override
-  public List<Department> findAll() {
-    return departmentRepository.findAll();
+  public Flowable<Department> findAll() {
+    return Flowable.fromIterable(departmentRepository.findAll());
   }
 
   @Override
-  public Department findById(Long id) throws NotFoundException {
-    return departmentRepository.findById(id)
-            .orElseThrow(() ->
-                    new NotFoundException("0001", "Could not found department with id " + id));
+  public Maybe<Department> findById(Long id) throws NotFoundException {
+    return Maybe.just(departmentRepository.findById(id))
+            .map(department -> department.get());
   }
 
   @Override
-  public Department save(Department department) {
-    return departmentRepository.save(department);
+  public Single<Department> save(Department department) {
+    return Single.just(departmentRepository.save(department));
   }
 
   @Override
-  public Department update(Department department) {
+  public Single<Department> update(Department department) {
     Long departmentId = department.getDepartmentId();
-    Department currentDepartment = departmentRepository.findById(departmentId)
-            .orElseThrow(() -> new NotFoundException("0001",
-                    "Could not found department with id " + departmentId));
-    currentDepartment.setName(department.getName());
-    currentDepartment.setUbication(department.getUbication());
-    return departmentRepository.save(currentDepartment);
+    Optional<Department> currentDepartment = departmentRepository.findById(departmentId);
+    currentDepartment.get().setName(department.getName());
+    currentDepartment.get().setUbication(department.getUbication());
+    return Single.just(departmentRepository.save(currentDepartment.get()));
   }
 
   @Override
   public void delete(Long id) {
-    departmentRepository.findById(id)
-            .orElseThrow(() ->
-                    new NotFoundException("0001", "Could not found department with id " + id));
     departmentRepository.deleteById(id);
   }
 }

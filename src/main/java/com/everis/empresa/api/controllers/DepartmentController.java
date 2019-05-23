@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,7 +31,7 @@ public class DepartmentController {
   }
 
   @GetMapping("/departments")
-  public List<Department> getAll() {
+  public Flowable<Department> getAll() {
     return departmentService.findAll();
   }
 
@@ -40,7 +42,7 @@ public class DepartmentController {
   }
 
   @GetMapping("/departments/{id}")
-  public Department findById(@PathVariable Long id) {
+  public Maybe<Department> findById(@PathVariable Long id) {
     return departmentService.findById(id);
   }
 
